@@ -2,12 +2,12 @@
  ## Description du Projet
 CRM est une application web de gestion de la relation client (CRM) destinée aux petites équipes commerciales et aux freelances. Elle permet de gérer des clients, des projets associés et leur statut, le tout dans une interface simple, rapide et fluide.
 L'application repose sur Next.js (frontend) et Django + DRF (backend API sécurisée).
-L’objectif est de fournir un outil minimal mais efficace, extensible à terme vers des fonctionnalités plus avancées (suivi de rendez-vous, rappels, notifications...).
+L'objectif est de fournir un outil minimal mais efficace, extensible à terme vers des fonctionnalités plus avancées (suivi de rendez-vous, rappels, notifications...).
 
 
 ## Besoins Fonctionnels
-### Page d’Accueil / Dashboard
-La page d’accueil du CRM servira de tableau de bord pour afficher un résumé des informations les plus pertinentes.
+### Page d'Accueil / Dashboard
+La page d'accueil du CRM servira de tableau de bord pour afficher un résumé des informations les plus pertinentes.
 
 #### Résumé des derniers clients ajoutés :
 
@@ -33,9 +33,23 @@ Projets Terminés : Nombre de projets ayant le statut "Terminé".
 
 Projets En Cours : Nombre de projets ayant le statut "En cours".
 
-Ces statistiques sont mises à jour en temps réel ou via des appels d’API réguliers pour fournir des données actualisées.
+Opportunités actives : Nombre d'opportunités en cours de négociation.
+
+Taux de conversion : Pourcentage des opportunités converties en projets.
+
+Ces statistiques sont mises à jour en temps réel ou via des appels d'API réguliers pour fournir des données actualisées.
 
 Les statistiques peuvent être affichées sous forme de cartes ou de graphiques simples (par exemple, des compteurs ou des diagrammes à barres).
+
+#### Tableaux de bord analytiques :
+
+Visualisation des performances commerciales.
+
+Suivi des objectifs de vente.
+
+Prévisions de vente basées sur le pipeline actuel.
+
+Analyse du cycle de vente.
 
 ### Gestion des Clients
 #### Liste paginée, tri et recherche :
@@ -44,6 +58,8 @@ Pagination : La liste des clients doit être paginée pour gérer un grand nombr
 Tri : Les utilisateurs doivent pouvoir trier la liste des clients par nom, email, ou date d'ajout.
 
 Recherche : Un champ de recherche permettra de filtrer les clients par nom ou email. Le filtre sera dynamique, offrant des suggestions au fur et à mesure que l'utilisateur tape.
+
+Segmentation : Possibilité de segmenter les clients par catégories personnalisées et d'utiliser l'IA pour une segmentation intelligente de la clientèle.
 
 #### Fiche Client :
 Lorsqu'un utilisateur clique sur un client dans la liste, une page de détails s'ouvrira avec les informations suivantes :
@@ -58,18 +74,22 @@ Téléphone (modifiable)
 
 Notes : Des notes personnalisées sur le client, qui peuvent être mises à jour.
 
+Historique des interactions : Journal des communications et interactions avec le client.
+
+Catégorie client : Classification du client selon des critères définis.
+
 #### CRUD Clients :
 Créer un client :
 
-Un formulaire permet de saisir les informations du client (nom, email, téléphone, adresse, notes). Ce formulaire sera accessible via un bouton “Ajouter un client”.
+Un formulaire permet de saisir les informations du client (nom, email, téléphone, adresse, notes). Ce formulaire sera accessible via un bouton "Ajouter un client".
 
 Modifier un client :
 
-L'utilisateur peut modifier les informations d'un client en accédant à la fiche du client et en cliquant sur un bouton “Modifier”.
+L'utilisateur peut modifier les informations d'un client en accédant à la fiche du client et en cliquant sur un bouton "Modifier".
 
 Supprimer un client :
 
-Un bouton “Supprimer” permettra de supprimer le client et toutes les données associées (projets, notes, etc.). Une confirmation sera demandée avant suppression.
+Un bouton "Supprimer" permettra de supprimer le client et toutes les données associées (projets, notes, etc.). Une confirmation sera demandée avant suppression.
 
 Consulter un client :
 
@@ -88,6 +108,10 @@ Statut : Le statut du projet (options : "À faire", "En cours", "Terminé").
 
 Date de début et de fin : Ces dates permettent de suivre les périodes des projets.
 
+Budget : Montant prévu pour le projet.
+
+Devis associé : Lien vers le devis ou la proposition commerciale.
+
 ### CRUD Projets :
 Créer un projet :
 
@@ -99,11 +123,56 @@ L'utilisateur peut modifier les informations du projet (nom, description, statut
 
 Supprimer un projet :
 
-Un bouton de suppression sera disponible sur la fiche d’un projet pour supprimer le projet. Une confirmation sera demandée avant de supprimer définitivement le projet.
+Un bouton de suppression sera disponible sur la fiche d'un projet pour supprimer le projet. Une confirmation sera demandée avant de supprimer définitivement le projet.
 
 Consulter les projets :
 
-Les projets seront affichés dans une liste paginée et triable. On pourra consulter les détails d’un projet en cliquant dessus.
+Les projets seront affichés dans une liste paginée et triable. On pourra consulter les détails d'un projet en cliquant dessus.
+
+## Gestion des Opportunités
+### Pipeline de vente :
+Visualisation des opportunités commerciales par étapes (prospect, qualification, proposition, négociation, conclusion).
+
+Déplacement intuitif des opportunités entre les différentes étapes du pipeline.
+
+Calcul automatique des probabilités de conversion basé sur l'étape et l'historique.
+
+### Champs d'une opportunité :
+Nom de l'opportunité
+
+Client associé
+
+Montant estimé
+
+Probabilité de conversion
+
+Étape actuelle dans le pipeline
+
+Date de création et date estimée de conclusion
+
+Notes et commentaires
+
+### Gestion des devis et propositions :
+Création et édition de devis liés aux opportunités.
+
+Historique des versions des propositions.
+
+Suivi du statut (envoyé, consulté, accepté, refusé).
+
+## Gestion des Tâches
+### Planification d'activités :
+Création et assignation de tâches liées aux clients ou projets.
+
+Définition de priorités et d'échéances.
+
+Rappels et notifications automatiques.
+
+### Suivi des tâches :
+Vue calendrier des activités planifiées.
+
+Marquage des tâches comme complétées.
+
+Historique des tâches réalisées par client/projet.
 
 ## Authentification & Permissions
 ### Connexion / Déconnexion :
@@ -116,12 +185,32 @@ Admin : L'admin aura un accès complet à toutes les fonctionnalités du CRM, y 
 
 Staff : Le staff aura un accès limité. Par exemple, un membre du staff pourra gérer les clients et les projets, mais ne pourra pas supprimer de clients ou de projets.
 
-Les rôles sont définis via un système de permissions au niveau de l’API, permettant de restreindre l'accès aux routes et actions en fonction du rôle de l'utilisateur.
+Les rôles sont définis via un système de permissions au niveau de l'API, permettant de restreindre l'accès aux routes et actions en fonction du rôle de l'utilisateur.
 
 Routes protégées côté Next.js selon rôle :
 Admin : Accès complet à toutes les pages et actions du CRM (création, modification, suppression de clients et projets).
 
 Staff : Accès à la gestion des clients et projets, mais aucune suppression autorisée. L'accès à certaines routes sensibles (comme la suppression d'un client ou d'un projet) sera bloqué pour les utilisateurs staff.
+
+## Reporting et Analyses
+### Tableaux de bord analytiques :
+Visualisation des performances commerciales.
+
+Suivi des objectifs de vente.
+
+Analyse du cycle de vente.
+
+### Rapports personnalisables :
+Génération de rapports sur les clients, projets et opportunités.
+
+Filtres avancés pour personnaliser les rapports.
+
+Export des données en différents formats (CSV, PDF, Excel).
+
+### Prévisions de vente :
+Calcul des prévisions basé sur le pipeline d'opportunités.
+
+Analyse des tendances.
 
 ## Besoins Non Fonctionnels
 ### Performance
@@ -136,6 +225,13 @@ Navigation au clavier : La navigation doit être entièrement accessible via le 
 
 Contrastes respectés : L'interface respectera les normes de contraste afin d'assurer que l'application est accessible aux personnes malvoyantes.
 
+### Interface utilisateur
+Design intuitif : Interface claire et facile à utiliser.
+
+Tableau de bord personnalisable : Permettre aux utilisateurs d'ajuster leur dashboard selon leurs besoins.
+
+Mobile First : Conception prioritaire pour les appareils mobiles.
+
 ### Sécurité
 Authentification sécurisée (JWT ou session) : Utilisation de JSON Web Tokens (JWT) ou de sessions sécurisées pour garantir l'authentification des utilisateurs.
 
@@ -144,18 +240,24 @@ API protégée par permissions DRF : Les routes de l'API Django sont sécurisée
 CORS : Les échanges entre le frontend Next.js et le backend Django respecteront les règles CORS afin de garantir la sécurité des données entre les différentes applications.
 
 ### Scalabilité
-Ajout de modules futurs : L'architecture du projet permettra l'intégration facile de nouveaux modules comme la gestion d’un calendrier, des rappels pour les projets, ou un système de gestion de fichiers.
+Ajout de modules futurs : L'architecture du projet permettra l'intégration facile de nouveaux modules comme la gestion d'un calendrier, des rappels pour les projets, ou un système de gestion de fichiers.
 
-Architecture claire : Le frontend et le backend seront séparés, ce qui facilitera l’évolution du projet et l’intégration de nouveaux services à l'avenir.
+Architecture claire : Le frontend et le backend seront séparés, ce qui facilitera l'évolution du projet et l'intégration de nouveaux services à l'avenir.
 
 
 
 ## Spécifications Techniques
 ### Backend (Django + DRF)
 #### Modèles
-Client : nom, société, email, téléphone, notes.
+Client : nom, société, email, téléphone, notes, catégorie.
 
-Projet : client, titre, description, statut, date_début, date_fin.
+Projet : client, titre, description, statut, date_début, date_fin, budget, devis_associé.
+
+Opportunité : client, nom, montant, probabilité, étape, date_création, date_conclusion_estimée, notes.
+
+Tâche : titre, description, assigné_à, client_associé, projet_associé, priorité, date_échéance, statut.
+
+Devis : opportunité, montant, date_création, statut, version, contenu.
 
 User (Django) : rôle (is_staff, is_admin).
 
@@ -164,7 +266,15 @@ User (Django) : rôle (is_staff, is_admin).
 
 /api/projets/ : CRUD des projets.
 
+/api/opportunites/ : CRUD des opportunités.
+
+/api/taches/ : CRUD des tâches.
+
+/api/devis/ : CRUD des devis.
+
 /api/dashboard/ : Stats et données résumées.
+
+/api/rapports/ : Génération de rapports personnalisés.
 
 /api/auth/ : Authentification (login/logout/token).
 
@@ -175,7 +285,7 @@ Permissions DRF : IsAuthenticated, IsAdminUser, custom.
 
 ## Frontend (Next.js)
 ### Pages
-/login : Formulaire d’auth.
+/login : Formulaire d'auth.
 
 /dashboard : Accès restreint aux utilisateurs connectés.
 
@@ -185,12 +295,26 @@ Permissions DRF : IsAuthenticated, IsAdminUser, custom.
 
 /projets : Liste de tous les projets.
 
+/opportunites : Pipeline de vente visuel.
+
+/opportunites/[id] : Détail d'une opportunité.
+
+/taches : Calendrier et liste des tâches.
+
+/rapports : Génération de rapports personnalisés.
+
 #### Composants clés
 Table de clients/projets (avec tri et pagination).
 
-Modale d’ajout rapide.
+Pipeline visuel pour les opportunités.
+
+Calendrier des tâches.
+
+Modale d'ajout rapide.
 
 Bouton "statut" dynamique (ex: switcher En cours → Terminé).
+
+Générateur de rapports personnalisables.
 
 Layout sécurisé avec getServerSideProps ou middleware.
 
@@ -201,15 +325,21 @@ Toasts (confirmation, erreurs).
 
 Skeleton loaders.
 
+Drag and drop pour le pipeline d'opportunités.
+
 ## Livrables
 ### Application Fonctionnelle
 Authentification et gestion des permissions.
 
-CRUD complet côté clients/projets.
+CRUD complet côté clients/projets/opportunités/tâches.
 
 Interface responsive et intuitive.
 
-Dashboard avec statistiques.
+Dashboard avec statistiques et visualisations.
+
+Pipeline de vente visuel.
+
+Système de génération de rapports.
 
 ### Documentation
 README avec instructions de déploiement.
@@ -223,7 +353,7 @@ Organisation claire :
 
 pages/, components/, services/ (Next.js)
 
-apps/clients/, apps/projets/ (Django)
+apps/clients/, apps/projets/, apps/opportunites/, apps/taches/ (Django)
 
 Git avec branches de fonctionnalités.
 
