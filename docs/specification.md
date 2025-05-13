@@ -5,7 +5,8 @@ L'application repose sur Next.js (frontend) et Django + DRF (backend API sécuri
 L’objectif est de fournir un outil minimal mais efficace, extensible à terme vers des fonctionnalités plus avancées (suivi de rendez-vous, rappels, notifications...).
 
 ## Analyse des Exigences
-###Objectifs Clés
+### Objectifs Clés
+
 Proposer une interface claire pour la gestion rapide des clients et de leurs projets.
 
 Permettre un accès restreint via des rôles utilisateurs (admin, staff).
@@ -16,7 +17,7 @@ Afficher un dashboard résumé (clients récents, projets actifs).
 
 Assurer une expérience responsive et rapide.
 
-###Cibles Principales
+### Cibles Principales
 Freelances ou TPE/PME ayant besoin d’un suivi simple de leurs clients.
 
 Agents ou commerciaux gérant plusieurs projets clients.
@@ -24,18 +25,18 @@ Agents ou commerciaux gérant plusieurs projets clients.
 Administrateurs contrôlant les utilisateurs et permissions.
 
 ## Analyse des Solutions
-###Choix Technologiques
-####Frontend : Next.js (React) pour SSR, rapidité, et SEO.
+### Choix Technologiques
+#### Frontend : Next.js (React) pour SSR, rapidité, et SEO.
 
-####UI : TailwindCSS pour un design moderne et responsive.
+#### UI : TailwindCSS pour un design moderne et responsive.
 
-####Backend/API : Django + Django REST Framework pour une API robuste et sécurisée.
+#### Backend/API : Django + Django REST Framework pour une API robuste et sécurisée.
 
-####Authentification : Django auth (avec JWT ou session).
+#### Authentification : Django auth (avec JWT ou session).
 
-####Base de données : PostgreSQL (relationnelle et adaptée au modèle CRM).
+#### Base de données : PostgreSQL (relationnelle et adaptée au modèle CRM).
 
-####Déploiement : Vercel (frontend) + Render/Heroku ou Railway (backend).
+#### Déploiement : Vercel (frontend) + Render/Heroku ou Railway (backend).
 
 ## Avantages de la Solution
 Stack moderne, simple à maintenir et à étendre.
@@ -100,14 +101,14 @@ Architecture propre (séparation claire frontend/backend).
 
 ## Spécifications Techniques
 ### Backend (Django + DRF)
-####Modèles
+#### Modèles
 Client : nom, société, email, téléphone, notes.
 
 Projet : client, titre, description, statut, date_début, date_fin.
 
 User (Django) : rôle (is_staff, is_admin).
 
-####API Endpoints
+#### API Endpoints
 /api/clients/ : CRUD des clients.
 
 /api/projets/ : CRUD des projets.
@@ -116,13 +117,13 @@ User (Django) : rôle (is_staff, is_admin).
 
 /api/auth/ : Authentification (login/logout/token).
 
-####Auth
+#### Auth
 Token JWT (via djangorestframework-simplejwt) ou sessions.
 
 Permissions DRF : IsAuthenticated, IsAdminUser, custom.
 
 ## Frontend (Next.js)
-###Pages
+### Pages
 /login : Formulaire d’auth.
 
 /dashboard : Accès restreint aux utilisateurs connectés.
@@ -133,7 +134,7 @@ Permissions DRF : IsAuthenticated, IsAdminUser, custom.
 
 /projets : Liste de tous les projets.
 
-####Composants clés
+#### Composants clés
 Table de clients/projets (avec tri et pagination).
 
 Modale d’ajout rapide.
@@ -142,7 +143,7 @@ Bouton "statut" dynamique (ex: switcher En cours → Terminé).
 
 Layout sécurisé avec getServerSideProps ou middleware.
 
-####UI
+#### UI
 TailwindCSS.
 
 Toasts (confirmation, erreurs).
