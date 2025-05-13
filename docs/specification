@@ -1,0 +1,179 @@
+# Spécifications : Projet de Mini CRM – "CRM"
+ ## Description du Projet
+CRM est une application web de gestion de la relation client (CRM) destinée aux petites équipes commerciales et aux freelances. Elle permet de gérer des clients, des projets associés et leur statut, le tout dans une interface simple, rapide et fluide.
+L'application repose sur Next.js (frontend) et Django + DRF (backend API sécurisée).
+L’objectif est de fournir un outil minimal mais efficace, extensible à terme vers des fonctionnalités plus avancées (suivi de rendez-vous, rappels, notifications...).
+
+## Analyse des Exigences
+###Objectifs Clés
+Proposer une interface claire pour la gestion rapide des clients et de leurs projets.
+
+Permettre un accès restreint via des rôles utilisateurs (admin, staff).
+
+Intégrer un système de création, édition et suivi des projets.
+
+Afficher un dashboard résumé (clients récents, projets actifs).
+
+Assurer une expérience responsive et rapide.
+
+###Cibles Principales
+Freelances ou TPE/PME ayant besoin d’un suivi simple de leurs clients.
+
+Agents ou commerciaux gérant plusieurs projets clients.
+
+Administrateurs contrôlant les utilisateurs et permissions.
+
+## Analyse des Solutions
+###Choix Technologiques
+####Frontend : Next.js (React) pour SSR, rapidité, et SEO.
+
+####UI : TailwindCSS pour un design moderne et responsive.
+
+####Backend/API : Django + Django REST Framework pour une API robuste et sécurisée.
+
+####Authentification : Django auth (avec JWT ou session).
+
+####Base de données : PostgreSQL (relationnelle et adaptée au modèle CRM).
+
+####Déploiement : Vercel (frontend) + Render/Heroku ou Railway (backend).
+
+## Avantages de la Solution
+Stack moderne, simple à maintenir et à étendre.
+
+Possibilité d’évoluer vers un CRM plus complet.
+
+Authentification sécurisée.
+
+Backend prêt à recevoir une interface admin Django.
+
+## Besoins Fonctionnels
+### Page d’Accueil / Dashboard
+Résumé des derniers clients ajoutés.
+
+Projets récents ou en cours.
+
+Statistiques simples : total clients, total projets, projets terminés/en cours.
+
+### Gestion des Clients
+Liste paginée, tri et recherche.
+
+Fiche client : nom, société, email, téléphone, notes.
+
+CRUD : créer, modifier, supprimer un client.
+
+### Gestion des Projets
+Chaque projet est lié à un client.
+
+Champs : nom, description, statut (À faire, En cours, Terminé), date de début/fin.
+
+CRUD projet avec visualisation par client.
+
+### Authentification & Permissions
+Connexion / déconnexion.
+
+Rôles : admin (plein accès) vs staff (accès limité à la gestion sans suppression).
+
+Routes protégées côté Next.js selon rôle.
+
+## Besoins Non Fonctionnels
+### Performance
+Chargement des pages < 1.5s.
+
+Lazy loading des listes de clients et projets.
+
+### Accessibilité
+Responsive mobile et tablette.
+
+Navigation clavier et contrastes respectés.
+
+### Sécurité
+Authentification sécurisée (JWT ou session).
+
+API protégée par permissions DRF.
+
+CORS géré correctement (Next ↔ Django).
+
+### Scalabilité
+Possibilité d’ajouter des modules : calendrier, rappels, fichiers.
+
+Architecture propre (séparation claire frontend/backend).
+
+## Spécifications Techniques
+### Backend (Django + DRF)
+####Modèles
+Client : nom, société, email, téléphone, notes.
+
+Projet : client, titre, description, statut, date_début, date_fin.
+
+User (Django) : rôle (is_staff, is_admin).
+
+####API Endpoints
+/api/clients/ : CRUD des clients.
+
+/api/projets/ : CRUD des projets.
+
+/api/dashboard/ : Stats et données résumées.
+
+/api/auth/ : Authentification (login/logout/token).
+
+####Auth
+Token JWT (via djangorestframework-simplejwt) ou sessions.
+
+Permissions DRF : IsAuthenticated, IsAdminUser, custom.
+
+## Frontend (Next.js)
+###Pages
+/login : Formulaire d’auth.
+
+/dashboard : Accès restreint aux utilisateurs connectés.
+
+/clients : Liste + recherche + lien fiche.
+
+/clients/[id] : Détail et projets liés.
+
+/projets : Liste de tous les projets.
+
+####Composants clés
+Table de clients/projets (avec tri et pagination).
+
+Modale d’ajout rapide.
+
+Bouton "statut" dynamique (ex: switcher En cours → Terminé).
+
+Layout sécurisé avec getServerSideProps ou middleware.
+
+####UI
+TailwindCSS.
+
+Toasts (confirmation, erreurs).
+
+Skeleton loaders.
+
+## Livrables
+### Application Fonctionnelle
+Authentification et gestion des permissions.
+
+CRUD complet côté clients/projets.
+
+Interface responsive et intuitive.
+
+Dashboard avec statistiques.
+
+### Documentation
+README avec instructions de déploiement.
+
+Documentation API (DRF + Swagger ou Redoc).
+
+Guide utilisateur (PDF ou page /docs).
+
+### Code Source
+Organisation claire :
+
+pages/, components/, services/ (Next.js)
+
+apps/clients/, apps/projets/ (Django)
+
+Git avec branches de fonctionnalités.
+
+Conventions PEP8 (backend) et ESLint/Prettier (frontend).
+
