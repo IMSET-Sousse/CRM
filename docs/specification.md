@@ -4,100 +4,151 @@ CRM est une application web de gestion de la relation client (CRM) destinée aux
 L'application repose sur Next.js (frontend) et Django + DRF (backend API sécurisée).
 L’objectif est de fournir un outil minimal mais efficace, extensible à terme vers des fonctionnalités plus avancées (suivi de rendez-vous, rappels, notifications...).
 
-## Analyse des Exigences
-### Objectifs Clés
-
-Proposer une interface claire pour la gestion rapide des clients et de leurs projets.
-
-Permettre un accès restreint via des rôles utilisateurs (admin, staff).
-
-Intégrer un système de création, édition et suivi des projets.
-
-Afficher un dashboard résumé (clients récents, projets actifs).
-
-Assurer une expérience responsive et rapide.
-
-### Cibles Principales
-Freelances ou TPE/PME ayant besoin d’un suivi simple de leurs clients.
-
-Agents ou commerciaux gérant plusieurs projets clients.
-
-Administrateurs contrôlant les utilisateurs et permissions.
-
-## Analyse des Solutions
-### Choix Technologiques
-#### Frontend : Next.js (React) pour SSR, rapidité, et SEO.
-
-#### UI : TailwindCSS pour un design moderne et responsive.
-
-#### Backend/API : Django + Django REST Framework pour une API robuste et sécurisée.
-
-#### Authentification : Django auth (avec JWT ou session).
-
-#### Base de données : PostgreSQL (relationnelle et adaptée au modèle CRM).
-
-#### Déploiement : Vercel (frontend) + Render/Heroku ou Railway (backend).
-
-## Avantages de la Solution
-Stack moderne, simple à maintenir et à étendre.
-
-Possibilité d’évoluer vers un CRM plus complet.
-
-Authentification sécurisée.
-
-Backend prêt à recevoir une interface admin Django.
 
 ## Besoins Fonctionnels
 ### Page d’Accueil / Dashboard
-Résumé des derniers clients ajoutés.
+La page d’accueil du CRM servira de tableau de bord pour afficher un résumé des informations les plus pertinentes.
 
-Projets récents ou en cours.
+#### Résumé des derniers clients ajoutés :
 
-Statistiques simples : total clients, total projets, projets terminés/en cours.
+Afficher une liste des derniers clients ajoutés, avec des informations telles que leur nom, l'email, et la date d'ajout.
+
+Limiter cette section aux 5 ou 10 derniers clients ajoutés.
+
+Ces données sont récupérées via l'API Django et affichées sous forme de cartes ou d'une liste simple dans le frontend.
+
+#### Projets récents ou en cours :
+
+Liste des projets en cours ou récents, avec des détails comme le nom du projet, son statut (À faire, En cours, Terminé), et les dates de début et fin.
+
+Afficher un maximum de 5 projets récents ou en cours pour une vue d'ensemble rapide.
+
+#### Statistiques simples :
+
+Total Clients : Nombre total de clients dans le CRM.
+
+Total Projets : Nombre total de projets dans le CRM.
+
+Projets Terminés : Nombre de projets ayant le statut "Terminé".
+
+Projets En Cours : Nombre de projets ayant le statut "En cours".
+
+Ces statistiques sont mises à jour en temps réel ou via des appels d’API réguliers pour fournir des données actualisées.
+
+Les statistiques peuvent être affichées sous forme de cartes ou de graphiques simples (par exemple, des compteurs ou des diagrammes à barres).
 
 ### Gestion des Clients
-Liste paginée, tri et recherche.
+#### Liste paginée, tri et recherche :
+Pagination : La liste des clients doit être paginée pour gérer un grand nombre de clients. Chaque page contiendra un nombre fixe de clients (par exemple, 10 clients par page).
 
-Fiche client : nom, société, email, téléphone, notes.
+Tri : Les utilisateurs doivent pouvoir trier la liste des clients par nom, email, ou date d'ajout.
 
-CRUD : créer, modifier, supprimer un client.
+Recherche : Un champ de recherche permettra de filtrer les clients par nom ou email. Le filtre sera dynamique, offrant des suggestions au fur et à mesure que l'utilisateur tape.
 
-### Gestion des Projets
-Chaque projet est lié à un client.
+#### Fiche Client :
+Lorsqu'un utilisateur clique sur un client dans la liste, une page de détails s'ouvrira avec les informations suivantes :
 
-Champs : nom, description, statut (À faire, En cours, Terminé), date de début/fin.
+Nom du client
 
-CRUD projet avec visualisation par client.
+Nom de la société (si applicable)
 
-### Authentification & Permissions
-Connexion / déconnexion.
+Email (modifiable)
 
-Rôles : admin (plein accès) vs staff (accès limité à la gestion sans suppression).
+Téléphone (modifiable)
 
-Routes protégées côté Next.js selon rôle.
+Notes : Des notes personnalisées sur le client, qui peuvent être mises à jour.
+
+#### CRUD Clients :
+Créer un client :
+
+Un formulaire permet de saisir les informations du client (nom, email, téléphone, adresse, notes). Ce formulaire sera accessible via un bouton “Ajouter un client”.
+
+Modifier un client :
+
+L'utilisateur peut modifier les informations d'un client en accédant à la fiche du client et en cliquant sur un bouton “Modifier”.
+
+Supprimer un client :
+
+Un bouton “Supprimer” permettra de supprimer le client et toutes les données associées (projets, notes, etc.). Une confirmation sera demandée avant suppression.
+
+Consulter un client :
+
+Les utilisateurs peuvent consulter les informations du client à partir de la liste des clients.
+
+## Gestion des Projets
+### Chaque projet est lié à un client :
+Lors de la création d'un projet, l'utilisateur doit associer ce projet à un client existant. Une liste déroulante permettra de sélectionner le client concerné.
+
+### Champs d'un projet :
+Nom du projet : Titre du projet.
+
+Description : Description détaillée du projet.
+
+Statut : Le statut du projet (options : "À faire", "En cours", "Terminé").
+
+Date de début et de fin : Ces dates permettent de suivre les périodes des projets.
+
+### CRUD Projets :
+Créer un projet :
+
+Un formulaire permet de saisir les informations du projet et de l'associer à un client.
+
+Modifier un projet :
+
+L'utilisateur peut modifier les informations du projet (nom, description, statut, dates de début et de fin).
+
+Supprimer un projet :
+
+Un bouton de suppression sera disponible sur la fiche d’un projet pour supprimer le projet. Une confirmation sera demandée avant de supprimer définitivement le projet.
+
+Consulter les projets :
+
+Les projets seront affichés dans une liste paginée et triable. On pourra consulter les détails d’un projet en cliquant dessus.
+
+## Authentification & Permissions
+### Connexion / Déconnexion :
+L'utilisateur devra se connecter à l'application via un formulaire de connexion avec email et mot de passe.
+
+Déconnexion : Un bouton de déconnexion sera disponible pour mettre fin à la session de l'utilisateur.
+
+### Rôles :
+Admin : L'admin aura un accès complet à toutes les fonctionnalités du CRM, y compris la gestion des clients et des projets, et la suppression de données.
+
+Staff : Le staff aura un accès limité. Par exemple, un membre du staff pourra gérer les clients et les projets, mais ne pourra pas supprimer de clients ou de projets.
+
+Les rôles sont définis via un système de permissions au niveau de l’API, permettant de restreindre l'accès aux routes et actions en fonction du rôle de l'utilisateur.
+
+Routes protégées côté Next.js selon rôle :
+Admin : Accès complet à toutes les pages et actions du CRM (création, modification, suppression de clients et projets).
+
+Staff : Accès à la gestion des clients et projets, mais aucune suppression autorisée. L'accès à certaines routes sensibles (comme la suppression d'un client ou d'un projet) sera bloqué pour les utilisateurs staff.
 
 ## Besoins Non Fonctionnels
 ### Performance
-Chargement des pages < 1.5s.
+Chargement des pages < 1.5s : Optimisation des performances pour un chargement rapide des pages et des données.
 
-Lazy loading des listes de clients et projets.
+Lazy loading : Les listes de clients et de projets seront chargées de manière progressive (lazy loading) pour ne pas surcharger la page initiale et améliorer l'expérience utilisateur.
 
 ### Accessibilité
-Responsive mobile et tablette.
+Responsive : Le CRM sera optimisé pour les appareils mobiles et tablettes, assurant une bonne expérience utilisateur quel que soit le périphérique utilisé.
 
-Navigation clavier et contrastes respectés.
+Navigation au clavier : La navigation doit être entièrement accessible via le clavier, ce qui inclut la possibilité de naviguer entre les champs des formulaires, les listes, et les boutons d'action.
+
+Contrastes respectés : L'interface respectera les normes de contraste afin d'assurer que l'application est accessible aux personnes malvoyantes.
 
 ### Sécurité
-Authentification sécurisée (JWT ou session).
+Authentification sécurisée (JWT ou session) : Utilisation de JSON Web Tokens (JWT) ou de sessions sécurisées pour garantir l'authentification des utilisateurs.
 
-API protégée par permissions DRF.
+API protégée par permissions DRF : Les routes de l'API Django sont sécurisées en fonction des rôles des utilisateurs, avec des permissions bien définies pour contrôler les accès aux données.
 
-CORS géré correctement (Next ↔ Django).
+CORS : Les échanges entre le frontend Next.js et le backend Django respecteront les règles CORS afin de garantir la sécurité des données entre les différentes applications.
 
 ### Scalabilité
-Possibilité d’ajouter des modules : calendrier, rappels, fichiers.
+Ajout de modules futurs : L'architecture du projet permettra l'intégration facile de nouveaux modules comme la gestion d’un calendrier, des rappels pour les projets, ou un système de gestion de fichiers.
 
-Architecture propre (séparation claire frontend/backend).
+Architecture claire : Le frontend et le backend seront séparés, ce qui facilitera l’évolution du projet et l’intégration de nouveaux services à l'avenir.
+
+
 
 ## Spécifications Techniques
 ### Backend (Django + DRF)
