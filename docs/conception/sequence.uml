@@ -1,0 +1,14 @@
+@startuml
+actor Utilisateur
+participant "Interface Web" as Web
+participant "Backend API (Django DRF)" as API
+participant "BDD" as DB
+
+Utilisateur -> Web : Remplir formulaire projet
+Web -> API : POST /api/projets/
+API -> DB : Vérifier client + insérer projet
+DB --> API : Projet enregistré
+API --> Web : Réponse JSON projet
+Web --> Utilisateur : Affiche confirmation
+@enduml
+    

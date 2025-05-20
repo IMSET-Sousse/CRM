@@ -1,0 +1,73 @@
+@startuml
+class Client {
+  +id: Integer
+  +nom: String
+  +societe: String
+  +email: String
+  +telephone: String
+  +notes: Text
+  +categorie: String
+}
+
+class Projet {
+  +id: Integer
+  +client_id: FK
+  +titre: String
+  +description: Text
+  +statut: String
+  +date_debut: Date
+  +date_fin: Date
+  +budget: Float
+  +devis_associe: FK
+}
+
+class Tache {
+  +id: Integer
+  +titre: String
+  +description: Text
+  +assigne_a: User
+  +client_associe: Client
+  +projet_associe: Projet
+  +priorite: String
+  +date_echeance: Date
+  +statut: String
+}
+
+class Opportunite {
+  +id: Integer
+  +client_id: FK
+  +nom: String
+  +montant: Float
+  +probabilite: Int
+  +etape: String
+  +date_creation: Date
+  +date_conclusion_estimee: Date
+  +notes: Text
+}
+
+class Devis {
+  +id: Integer
+  +opportunite_id: FK
+  +montant: Float
+  +date_creation: Date
+  +statut: String
+  +version: Integer
+  +contenu: Text
+}
+
+class User {
+  +id: Integer
+  +nom_utilisateur: String
+  +email: String
+  +mot_de_passe: String
+  +is_admin: Boolean
+  +is_staff: Boolean
+}
+
+Client "1" -- "*" Projet
+Projet "1" -- "*" Tache
+Client "1" -- "*" Tache
+Client "1" -- "*" Opportunite
+Opportunite "1" -- "1" Devis
+User "1" -- "*" Tache : assigne_a
+@enduml

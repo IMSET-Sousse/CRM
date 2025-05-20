@@ -1,0 +1,33 @@
+@startuml
+actor Utilisateur
+
+Utilisateur --> (Gérer Clients)
+Utilisateur --> (Gérer Projets)
+Utilisateur --> (Gérer Opportunités)
+Utilisateur --> (Gérer Tâches)
+Utilisateur --> (Accéder Dashboard)
+
+(Gérer Clients) --> (Ajouter Client)
+(Gérer Clients) --> (Modifier Client)
+(Gérer Clients) --> (Supprimer Client)
+(Gérer Clients) --> (Consulter Clients)
+
+(Gérer Projets) --> (Ajouter Projet)
+(Gérer Projets) --> (Modifier Projet)
+(Gérer Projets) --> (Supprimer Projet)
+(Gérer Projets) --> (Consulter Projets)
+
+(Gérer Opportunités) --> (Ajouter Opportunité)
+(Gérer Opportunités) --> (Modifier Opportunité)
+(Gérer Opportunités) --> (Supprimer Opportunité)
+(Gérer Opportunités) --> (Déplacer dans Pipeline)
+(Gérer Opportunités) --> (Générer Devis)
+
+(Gérer Tâches) --> (Ajouter Tâche)
+(Gérer Tâches) --> (Modifier Tâche)
+(Gérer Tâches) --> (Supprimer Tâche)
+(Gérer Tâches) --> (Consulter par Projet ou Client)
+
+(Accéder Dashboard) --> (Voir Statistiques)
+(Accéder Dashboard) --> (Voir Derniers Ajouts)
+@enduml
