@@ -1,188 +1,150 @@
 # Backend (Django + DRF)
 
 ## Models
-- **Client**
-  - nom: CharField (obligatoire)
-  - société: CharField (optionnel)
-  - email: EmailField (obligatoire, unique)
-  - téléphone: CharField (optionnel)
-  - notes: TextField (optionnel)
-  - catégorie: CharField avec choix ou ForeignKey vers modèle Catégorie
-  - date_création: DateTimeField (auto_now_add)
-  - dernière_modification: DateTimeField (auto_now)
+### Client
+- **Champs**: id, nom, société, email, téléphone, notes, catégorie, date_création, date_modification
+- **Relations**: OneToMany avec Projet, OneToMany avec Opportunité, OneToMany avec Tâche
+- **Validations**: Email unique, format téléphone valide, nom obligatoire
+- **Méthodes**: get_projets_actifs(), get_opportunites_actives(), calculate_valeur_client()
 
-- **Projet**
-  - client: ForeignKey vers Client (obligatoire)
-  - titre: CharField (obligatoire)
-  - description: TextField (optionnel)
-  - statut: CharField avec choix ["À faire", "En cours", "Terminé"] (obligatoire)
-  - date_début: DateField (obligatoire)
-  - date_fin: DateField (optionnel)
-  - budget: DecimalField (optionnel)
-  - devis_associé: ForeignKey vers Devis (optionnel)
-  - date_création: DateTimeField (auto_now_add)
-  - dernière_modification: DateTimeField (auto_now)
+### Projet
+- **Champs**: id, titre, description, statut (choix: "À faire", "En cours", "Terminé"), date_début, date_fin, budget, devis_associé, date_création, date_modification
+- **Relations**: ManyToOne avec Client, OneToMany avec Tâche
+- **Validations**: Titre obligatoire, date_fin > date_début, client obligatoire
+- **Méthodes**: get_duree(), get_taches_associees(), is_en_retard()
 
-- **Opportunité**
-  - client: ForeignKey vers Client (obligatoire)
-  - nom: CharField (obligatoire)
-  - montant: DecimalField (obligatoire)
-  - probabilité: IntegerField (0-100%) (obligatoire)
-  - étape: CharField avec choix ["prospect", "qualification", "proposition", "négociation", "conclusion"] (obligatoire)
-  - date_création: DateTimeField (auto_now_add)
-  - date_conclusion_estimée: DateField (optionnel)
-  - notes: TextField (optionnel)
-  - dernière_modification: DateTimeField (auto_now)
+### Opportunité
+- **Champs**: id, nom, client, montant, probabilité, étape (choix: "prospect", "qualification", "proposition", "négociation", "conclusion"), date_création, date_conclusion_estimée, notes, date_modification
+- **Relations**: ManyToOne avec Client, OneToMany avec Devis
+- **Validations**: Nom obligatoire, client obligatoire, probabilité entre 0-100%
+- **Méthodes**: calculate_valeur_ponderee(), get_devis_actif(), advance_stage()
 
-- **Tâche**
-  - titre: CharField (obligatoire)
-  - description: TextField (optionnel)
-  - assigné_à: ForeignKey vers User (obligatoire)
-  - client_associé: ForeignKey vers Client (optionnel)
-  - projet_associé: ForeignKey vers Projet (optionnel)
-  - priorité: CharField avec choix ["Basse", "Moyenne", "Haute", "Urgente"] (obligatoire)
-  - date_échéance: DateTimeField (obligatoire)
-  - statut: CharField avec choix ["À faire", "En cours", "Terminée"] (obligatoire)
-  - date_création: DateTimeField (auto_now_add)
-  - dernière_modification: DateTimeField (auto_now)
+### Tâche
+- **Champs**: id, titre, description, assigné_à, client_associé, projet_associé, priorité (choix: "Basse", "Moyenne", "Haute", "Urgente"), date_échéance, statut (choix: "À faire", "En cours", "Terminée"), date_création, date_modification
+- **Relations**: ManyToOne avec User, ManyToOne avec Client, ManyToOne avec Projet (optionnel)
+- **Validations**: Titre obligatoire, date_échéance obligatoire, priorité obligatoire
+- **Méthodes**: mark_completed(), is_overdue(), reassign_to(user)
 
-- **Devis**
-  - opportunité: ForeignKey vers Opportunité (obligatoire)
-  - montant: DecimalField (obligatoire)
-  - date_création: DateTimeField (auto_now_add)
-  - statut: CharField avec choix ["Brouillon", "Envoyé", "Consulté", "Accepté", "Refusé"] (obligatoire)
-  - version: IntegerField (pour suivi des versions) (obligatoire)
-  - contenu: JSONField ou TextField (pour stocker le contenu détaillé) (obligatoire)
-  - date_dernière_modification: DateTimeField (auto_now)
+### Devis
+- **Champs**: id, opportunité, montant, date_création, statut (choix: "Brouillon", "Envoyé", "Consulté", "Accepté", "Refusé"), version, contenu, date_modification
+- **Relations**: ManyToOne avec Opportunité
+- **Validations**: Opportunité obligatoire, montant > 0
+- **Méthodes**: generate_pdf(), send_to_client(), create_new_version()
 
-- **User (Django)**
-  - Extension du modèle Django User avec:
-  - is_admin: BooleanField (autorisations complètes)
-  - is_staff: BooleanField (autorisations limitées)
-  - autres champs personnalisés (photo de profil, titre, etc.)
+### User (Django)
+- **Champs**: Standard Django User + rôle (is_staff, is_admin), département, téléphone
+- **Relations**: OneToMany avec Tâche (assigné_à)
+- **Permissions**: Basées sur groupes et permissions Django
 
 ## API Endpoints
-
 ### Clients
-- `GET /api/clients/` - Liste paginée des clients avec filtres (nom, email, catégorie)
-- `POST /api/clients/` - Création d'un nouveau client
-- `GET /api/clients/{id}/` - Détails d'un client spécifique
-- `PUT/PATCH /api/clients/{id}/` - Mise à jour d'un client
+- `GET /api/clients/` - Liste des clients (filtrable, paginée)
+- `POST /api/clients/` - Création d'un client
+- `GET /api/clients/{id}/` - Détail d'un client
+- `PUT /api/clients/{id}/` - Mise à jour complète d'un client
+- `PATCH /api/clients/{id}/` - Mise à jour partielle d'un client
 - `DELETE /api/clients/{id}/` - Suppression d'un client
-- `GET /api/clients/{id}/projets/` - Liste des projets liés à un client
-- `GET /api/clients/{id}/opportunites/` - Liste des opportunités liées à un client
+- `GET /api/clients/{id}/projets/` - Liste des projets d'un client
+- `GET /api/clients/{id}/opportunites/` - Liste des opportunités d'un client
 - `GET /api/clients/{id}/taches/` - Liste des tâches associées à un client
 
 ### Projets
-- `GET /api/projets/` - Liste paginée des projets avec filtres (statut, client, dates)
-- `POST /api/projets/` - Création d'un nouveau projet
-- `GET /api/projets/{id}/` - Détails d'un projet spécifique
-- `PUT/PATCH /api/projets/{id}/` - Mise à jour d'un projet
+- `GET /api/projets/` - Liste des projets (filtrable, paginée)
+- `POST /api/projets/` - Création d'un projet
+- `GET /api/projets/{id}/` - Détail d'un projet
+- `PUT /api/projets/{id}/` - Mise à jour complète d'un projet
+- `PATCH /api/projets/{id}/` - Mise à jour partielle d'un projet
 - `DELETE /api/projets/{id}/` - Suppression d'un projet
 - `GET /api/projets/{id}/taches/` - Liste des tâches associées à un projet
-- `POST /api/projets/{id}/taches/` - Ajout rapide d'une tâche liée au projet
 
 ### Opportunités
-- `GET /api/opportunites/` - Liste paginée des opportunités avec filtres (étape, client, montant)
-- `POST /api/opportunites/` - Création d'une nouvelle opportunité
-- `GET /api/opportunites/{id}/` - Détails d'une opportunité spécifique
-- `PUT/PATCH /api/opportunites/{id}/` - Mise à jour d'une opportunité
+- `GET /api/opportunites/` - Liste des opportunités (filtrable par étape, paginée)
+- `POST /api/opportunites/` - Création d'une opportunité
+- `GET /api/opportunites/{id}/` - Détail d'une opportunité
+- `PUT /api/opportunites/{id}/` - Mise à jour complète d'une opportunité
+- `PATCH /api/opportunites/{id}/` - Mise à jour partielle d'une opportunité
 - `DELETE /api/opportunites/{id}/` - Suppression d'une opportunité
-- `GET /api/opportunites/{id}/devis/` - Liste des devis associés à une opportunité
-- `POST /api/opportunites/{id}/devis/` - Création d'un devis lié à l'opportunité
-- `PATCH /api/opportunites/{id}/etape/` - Mise à jour rapide de l'étape (pour drag & drop du pipeline)
+- `GET /api/opportunites/{id}/devis/` - Liste des devis d'une opportunité
+- `POST /api/opportunites/{id}/avancer-etape/` - Avancer l'étape d'une opportunité
 
 ### Tâches
-- `GET /api/taches/` - Liste paginée des tâches avec filtres (statut, priorité, dates, assignation)
-- `POST /api/taches/` - Création d'une nouvelle tâche
-- `GET /api/taches/{id}/` - Détails d'une tâche spécifique
-- `PUT/PATCH /api/taches/{id}/` - Mise à jour d'une tâche
+- `GET /api/taches/` - Liste des tâches (filtrable, paginée)
+- `POST /api/taches/` - Création d'une tâche
+- `GET /api/taches/{id}/` - Détail d'une tâche
+- `PUT /api/taches/{id}/` - Mise à jour complète d'une tâche
+- `PATCH /api/taches/{id}/` - Mise à jour partielle d'une tâche
 - `DELETE /api/taches/{id}/` - Suppression d'une tâche
-- `PATCH /api/taches/{id}/statut/` - Mise à jour rapide du statut d'une tâche
-- `GET /api/taches/calendar/` - Vue calendrier des tâches (format adapté)
+- `PATCH /api/taches/{id}/complete/` - Marquer une tâche comme terminée
 
 ### Devis
-- `GET /api/devis/` - Liste paginée des devis avec filtres (statut, client, montant)
-- `POST /api/devis/` - Création d'un nouveau devis
-- `GET /api/devis/{id}/` - Détails d'un devis spécifique
-- `PUT/PATCH /api/devis/{id}/` - Mise à jour d'un devis
+- `GET /api/devis/` - Liste des devis (filtrable, paginée)
+- `POST /api/devis/` - Création d'un devis
+- `GET /api/devis/{id}/` - Détail d'un devis
+- `PUT /api/devis/{id}/` - Mise à jour complète d'un devis
+- `PATCH /api/devis/{id}/` - Mise à jour partielle d'un devis
 - `DELETE /api/devis/{id}/` - Suppression d'un devis
-- `PATCH /api/devis/{id}/statut/` - Mise à jour rapide du statut d'un devis
-- `POST /api/devis/{id}/duplicate/` - Création d'une nouvelle version d'un devis existant
+- `POST /api/devis/{id}/envoyer/` - Envoyer un devis au client
+- `POST /api/devis/{id}/nouvelle-version/` - Créer une nouvelle version d'un devis
 
 ### Dashboard
-- `GET /api/dashboard/stats/` - Statistiques générales (compteurs, KPIs)
-- `GET /api/dashboard/clients-recents/` - Liste des derniers clients ajoutés
-- `GET /api/dashboard/projets-recents/` - Liste des projets récents ou en cours
-- `GET /api/dashboard/opportunites-pipeline/` - Distribution des opportunités par étape
-- `GET /api/dashboard/revenus/` - Données de revenus (réalisés, prévus)
-- `GET /api/dashboard/taches-a-venir/` - Tâches à venir (7 prochains jours)
+- `GET /api/dashboard/stats/` - Statistiques globales (total clients, projets, etc.)
+- `GET /api/dashboard/projets-recents/` - Liste des projets récents
+- `GET /api/dashboard/clients-recents/` - Liste des clients récemment ajoutés
+- `GET /api/dashboard/opportunites-actives/` - Liste des opportunités actives
+- `GET /api/dashboard/taches-a-venir/` - Liste des tâches à venir
+- `GET /api/dashboard/performance/` - Données de performance (taux de conversion, etc.)
 
 ### Rapports
-- `GET /api/rapports/clients/` - Rapport détaillé sur les clients avec filtres personnalisés
-- `GET /api/rapports/projets/` - Rapport détaillé sur les projets avec filtres personnalisés
-- `GET /api/rapports/opportunites/` - Rapport sur les opportunités et le pipeline de vente
-- `GET /api/rapports/revenus/` - Rapport d'analyse des revenus (périodes, tendances)
-- `POST /api/rapports/export/` - Export de données filtrées en CSV, PDF ou Excel
+- `GET /api/rapports/clients/` - Rapport sur les clients (filtrable)
+- `GET /api/rapports/projets/` - Rapport sur les projets (filtrable)
+- `GET /api/rapports/opportunites/` - Rapport sur les opportunités (filtrable)
+- `GET /api/rapports/pipeline/` - Rapport sur le pipeline de vente
+- `GET /api/rapports/performances/` - Rapport sur les performances commerciales
+- `POST /api/rapports/export/` - Exporter un rapport en CSV/Excel/PDF
 
 ### Authentication
-- `POST /api/auth/login/` - Authentification et génération de token JWT
-- `POST /api/auth/logout/` - Déconnexion (invalidation de token)
-- `POST /api/auth/refresh/` - Rafraîchissement d'un token expiré
-- `GET /api/auth/me/` - Informations sur l'utilisateur connecté
-- `PATCH /api/auth/password/` - Changement de mot de passe
+- `POST /api/auth/login/` - Connexion (obtention de token JWT)
+- `POST /api/auth/refresh/` - Rafraîchissement du token JWT
+- `POST /api/auth/logout/` - Déconnexion (invalidation du token)
+- `GET /api/auth/user/` - Informations sur l'utilisateur connecté
+- `PUT /api/auth/password/change/` - Changement de mot de passe
 
-## Authentication
-- **Token JWT** (via djangorestframework-simplejwt)
-  - Durée de validité: access token 15 minutes, refresh token 7 jours
-  - Stockage sécurisé côté client (httpOnly cookies ou localStorage avec précautions)
-  - Rotation des tokens de rafraîchissement pour éviter les compromissions
-  
-- **Permissions DRF**
-  - IsAuthenticated - Base pour toutes les routes d'API
-  - IsAdminUser - Pour les opérations sensibles (suppression, export massif)
-  - Permissions personnalisées:
-    - IsOwnerOrReadOnly - Pour les ressources appartenant à un utilisateur spécifique
-    - IsStaffOrAdmin - Pour les actions autorisées aux équipes internes
-    - CanViewClient/Project - Pour les permissions granulaires basées sur les rôles
+## Authentication & Sécurité
+- Token JWT (via djangorestframework-simplejwt)
+  - Durée de validité: Access token (15min), Refresh token (7 jours)
+  - Stockage sécurisé côté client (httpOnly cookies)
+- Permissions DRF:
+  - IsAuthenticated - Pour toutes les routes
+  - IsAdminUser - Pour les opérations sensibles (suppression)
+  - CustomPermissions - Pour la gestion des rôles spécifiques
+- Sécurité:
+  - Validation des données d'entrée
+  - Protection CSRF
+  - Rate limiting sur les endpoints sensibles
+  - Logging des actions sensibles
+  - Sanitization des données utilisateur
+  - Filtrage des données selon le rôle de l'utilisateur
 
-## Sécurité
-- Protection CSRF pour les requêtes non-GET
-- Validation stricte des données d'entrée
-- Rate limiting pour prévenir les attaques par force brute
-- Sanitisation des données sensibles dans les réponses API
-- Cryptage des données sensibles en base de données
-- Journalisation des actions sensibles (audit trail)
-- Headers de sécurité configurés (HSTS, Content-Security-Policy, etc.)
-
-## Performance
+## Architecture et Performance
+- Structure modulaire par applications Django (clients, projets, opportunites, taches, devis)
+- Utilisation de serializers pour validation et transformation des données
 - Optimisation des requêtes avec select_related() et prefetch_related()
-- Mise en cache des réponses API fréquemment demandées
-- Pagination pour les listes volumineuses
-- Utilisation de APIView ou ViewSets selon les besoins d'optimisation
-- Monitoring des performances et temps de réponse
-- Optimisation des requêtes N+1 avec Django Debug Toolbar
-- Indexation correcte des champs fréquemment recherchés
+- Mise en cache des données fréquemment accédées
+- Pagination pour limiter la taille des réponses API
+- Filtrage côté serveur pour réduire le volume de données transférées
+- Documentation API automatique avec Swagger/OpenAPI
 
-## Structure du Projet
-- Organisation par apps Django fonctionnelles:
-  - `apps/clients/` - Modèles, vues, sérialiseurs pour clients
-  - `apps/projets/` - Modèles, vues, sérialiseurs pour projets
-  - `apps/opportunites/` - Modèles, vues, sérialiseurs pour opportunités et devis
-  - `apps/taches/` - Modèles, vues, sérialiseurs pour tâches et calendrier
-  - `apps/users/` - Extension du modèle User et authentification
-  - `apps/dashboard/` - Vues agrégées pour le tableau de bord
-  - `apps/rapports/` - Génération et export de rapports
+## Validation et Gestion des Erreurs
+- Validation des données via serializers DRF
+- Gestion centralisée des exceptions avec des réponses d'erreur standardisées
+- Messages d'erreur explicites et localisés
+- Journalisation des erreurs avec différents niveaux de gravité
+- Tests unitaires et d'intégration pour les cas limites
 
-## Tests
-- Tests unitaires pour modèles et logique métier
-- Tests d'intégration pour l'API avec APITestCase
-- Tests de sécurité pour les points d'entrée sensibles
-- Couverture de code minimale de 80%
-- Tests de performance pour les endpoints critiques
-
-## Documentation
-- Documentation API automatique avec drf-spectacular ou drf-yasg (Swagger/OpenAPI)
-- Documentation interne des fonctions et classes avec docstrings
-- README détaillé pour setup et développement
-- Commentaires pour les sections complexes du code
+## Base de Données
+- Migrations Django pour la gestion du schéma
+- Indexation des champs fréquemment recherchés
+- Transactions pour les opérations critiques
+- Contraintes d'intégrité au niveau de la base de données
+- Sauvegarde régulière des données
+ 
