@@ -1,4 +1,4 @@
-node_modules
 .env
 .venv
 db.sqlite3
+__pycache__/
