@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// This would normally come from a database
+// dummy data ( fetching from api)
 const initialData = {
   stages: {
     prospect: {

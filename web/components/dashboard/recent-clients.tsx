@@ -4,42 +4,45 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-const recentClients = [
-  {
-    id: "1",
-    name: "Acme Inc",
-    email: "contact@acme.com",
-    status: "Active",
-    lastContact: "Il y a 2 jours",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    name: "Globex Corporation",
-    email: "info@globex.com",
-    status: "Active",
-    lastContact: "Il y a 5 jours",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "3",
-    name: "Stark Industries",
-    email: "contact@stark.com",
-    status: "Inactif",
-    lastContact: "Il y a 2 semaines",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "4",
-    name: "Wayne Enterprises",
-    email: "info@wayne.com",
-    status: "Active",
-    lastContact: "Hier",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-]
+
 
 export function RecentClients() {
+  // dummy data ( fetching from api)
+  const recentClients = [
+    {
+      id: "1",
+      name: "Acme Inc",
+      email: "contact@acme.com",
+      status: "Active",
+      lastContact: "Il y a 2 jours",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "2",
+      name: "Globex Corporation",
+      email: "info@globex.com",
+      status: "Active",
+      lastContact: "Il y a 5 jours",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "3",
+      name: "Stark Industries",
+      email: "contact@stark.com",
+      status: "Inactif",
+      lastContact: "Il y a 2 semaines",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+    {
+      id: "4",
+      name: "Wayne Enterprises",
+      email: "info@wayne.com",
+      status: "Active",
+      lastContact: "Hier",
+      avatar: "/placeholder.svg?height=40&width=40",
+    },
+  ]
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">

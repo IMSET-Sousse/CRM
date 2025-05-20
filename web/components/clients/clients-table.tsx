@@ -40,6 +40,8 @@ type Client = {
   lastContact: string
 }
 
+
+  // dummy data ( fetching from api)
 const data: Client[] = [
   {
     id: "1",

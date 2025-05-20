@@ -8,3 +8,4 @@ Pillow
 django-filter
 whitenoise
 django-debug-toolbar
+django-filter

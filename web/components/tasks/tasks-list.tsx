@@ -17,7 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// This would normally come from a database
+
+// dummy data ( fetching from tasks api)
 const allTasks = [
   {
     id: "1",

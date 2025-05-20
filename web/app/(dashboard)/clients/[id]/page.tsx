@@ -10,6 +10,8 @@ import { ClientNotes } from "@/components/clients/client-notes"
 
 // This would normally come from a database
 const getClientById = (id: string) => {
+  
+  // dummy data ( fetching from api)
   return {
     id,
     name: "Acme Inc",
